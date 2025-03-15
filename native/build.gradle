@@ -19,6 +19,7 @@
 plugins {
     id 'checkstyle'
     id 'com.github.spotbugs'
+    id 'java'
 }
 
 description = "Ballerina - Consolidate packages tool native code"
@@ -89,4 +90,26 @@ test {
     useTestNG()
     systemProperty "ballerina.home", distributionBinPath
     systemProperty "project.version", "${project.version}"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId "tool-consolidate-packages"
+            version = project.version
+            artifact jar
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/ballerina-platform/tool-consolidate-packages")
+            credentials {
+                username = System.getenv("publishUser")
+                password = System.getenv("publishPAT")
+            }
+        }
+    }
 }
